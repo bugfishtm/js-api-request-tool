@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/x-icon" href="./favicon.ico">
+
+<!-- META INJECTION START -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="copyright" content="bugfish">
+<meta name="language" content="en">
+<meta name="robots" content="index,follow">
+<meta name="author" content="bugfish, ynvnzmlzaa@gmail.com">
+<meta name="description" content="Browser-based HTTP request tool — build, send, and inspect API calls across all methods with saved collections, request history, and JSON highlighting in a single self-contained HTML file.">
+<meta property="og:title" content="APIForge — Request Tool">
+<meta property="og:description" content="Browser-based HTTP request tool — build, send, and inspect API calls across all methods with saved collections, request history, and JSON highlighting in a single self-contained HTML file.">
+<meta property="og:image" content="/meta.jpg">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://bugfishtm.github.io/simple-aiml-api-interface/">
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "WebSite",
+  "name": "APIForge — Request Tool",
+  "url": "https://bugfishtm.github.io/simple-aiml-api-interface/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "APIForge — Request Tool",
+  "headline": "APIForge — All-in-One API Request Tool",
+  "description": "Browser-based HTTP request tool — build, send, and inspect API calls across all methods with saved collections, request history, and JSON highlighting in a single self-contained HTML file.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Any (browser-based)",
+  "datePublished": "2026-05-28",
+  "dateModified": "2026-05-28",
+  "author": {
+    "@type": "Person",
+    "name": "Jan-Maurice Dahlmanns"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Bugfish",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "/logo.jpg"
+    }
+  }
+}
+</script>
+<!-- META INJECTION END -->
+<title>APIForge — Request Tool</title>
+<style>
+:root {
+  --bg:#0f172a;--surface:#1e293b;--surface2:#263548;--border:#334155;
+  --accent:#6366f1;--accent2:#818cf8;--text:#e2e8f0;--muted:#94a3b8;--dim:#64748b;
+  --ok:#22c55e;--err:#ef4444;--warn:#f59e0b;--info:#3b82f6;
+  --jstr:#a3e635;--jnum:#fb923c;--jbool:#c084fc;--jnull:#94a3b8;--jkey:#7dd3fc;
+  --r:6px;--mono:'Cascadia Code','Fira Code',Consolas,Monaco,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+}
+.lt {
+  --bg:#f8fafc;--surface:#fff;--surface2:#f1f5f9;--border:#e2e8f0;
+  --text:#0f172a;--muted:#475569;--dim:#94a3b8;
+  --jstr:#16a34a;--jnum:#ea580c;--jbool:#7c3aed;--jnull:#64748b;--jkey:#0284c7;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden;font-size:13px}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--dim)}
+
+/* ── Header ── */
+.hdr{display:flex;align-items:center;padding:0 14px;height:46px;background:var(--surface);border-bottom:1px solid var(--border);gap:10px;flex-shrink:0;z-index:10}
+.logo{font-weight:700;font-size:15px;color:var(--accent);letter-spacing:-.3px}
+.logo b{color:var(--text);font-weight:400}
+.hdr-right{margin-left:auto;display:flex;gap:6px;align-items:center}
+
+/* ── Buttons ── */
+.btn{height:34px;padding:0 14px;border-radius:var(--r);border:1px solid var(--border);cursor:pointer;font-size:12px;font-weight:600;background:var(--surface2);color:var(--text);transition:opacity .12s;display:inline-flex;align-items:center;gap:5px}
+.btn:hover{opacity:.8}.btn:active{opacity:.65}
+.btn-p{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-sm{height:26px;padding:0 9px;font-size:11px}
+.btn-ico{height:30px;width:30px;padding:0;justify-content:center;font-size:15px}
+
+/* ── Layout ── */
+.main{display:flex;flex:1;overflow:hidden}
+.sidebar{width:240px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
+.content{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.split{display:flex;flex:1;overflow:hidden}
+.pane{display:flex;flex-direction:column;overflow:hidden;flex:1;min-width:180px}
+.pane-l{border-right:1px solid var(--border)}
+
+/* ── Sidebar ── */
+.sb-hd{padding:9px 10px 7px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.sb-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dim)}
+.sb-list{overflow-y:auto;padding:4px}
+.sb-item{display:flex;align-items:center;gap:6px;padding:6px 7px;border-radius:var(--r);cursor:pointer;color:var(--muted)}
+.sb-item:hover{background:var(--surface2);color:var(--text)}
+.sb-item .mbadge{font-size:9px;font-weight:800;padding:2px 4px;border-radius:3px;font-family:var(--mono);flex-shrink:0}
+.sb-item .iurl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;font-size:12px}
+.sb-item .idel{opacity:0;color:var(--err);font-size:15px;padding:1px 3px;background:none;border:none;cursor:pointer;line-height:1}
+.sb-item:hover .idel{opacity:1}
+.sb-act{padding:8px;border-top:1px solid var(--border);display:flex;gap:5px;flex-shrink:0}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:20px;color:var(--dim);font-size:11px;text-align:center}
+.empty .ei{font-size:26px;margin-bottom:2px;opacity:.4}
+
+/* ── Method badge colors ── */
+.m-GET{background:rgba(34,197,94,.15);color:#22c55e}
+.m-POST{background:rgba(245,158,11,.15);color:#f59e0b}
+.m-PUT{background:rgba(59,130,246,.15);color:#3b82f6}
+.m-PATCH{background:rgba(139,92,246,.15);color:#8b5cf6}
+.m-DELETE{background:rgba(239,68,68,.15);color:#ef4444}
+.m-HEAD,.m-OPTIONS{background:rgba(107,114,128,.15);color:#9ca3af}
+
+/* ── Request bar ── */
+.req-bar{padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;gap:7px;align-items:center;flex-shrink:0}
+.msel{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:0 10px;height:36px;border-radius:var(--r);font-size:12px;font-weight:700;cursor:pointer;min-width:88px;font-family:var(--mono)}
+.msel:focus{outline:none;border-color:var(--accent)}
+.urlinput{flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:0 11px;height:36px;border-radius:var(--r);font-size:12px;font-family:var(--mono)}
+.urlinput:focus{outline:none;border-color:var(--accent)}
+.urlinput::placeholder{color:var(--dim)}
+select option{background:var(--surface)}
+
+/* ── Tabs ── */
+.tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);padding:0 10px;flex-shrink:0}
+.tab{padding:9px 12px;font-size:12px;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;transition:color .12s}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+.tbadge{background:var(--accent);color:#fff;font-size:9px;padding:1px 4px;border-radius:8px;margin-left:3px;font-weight:700}
+.tpanel{display:none;flex:1;overflow:hidden;flex-direction:column}
+.tpanel.active{display:flex}
+
+/* ── KV Table ── */
+.kv-wrap{flex:1;overflow-y:auto;padding:6px}
+.kv-row{display:flex;gap:5px;margin-bottom:3px;align-items:center}
+.kv-row input[type=text],.kv-row input[type=password]{flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:5px 8px;border-radius:4px;font-size:11px;font-family:var(--mono)}
+.kv-row input[type=text]:focus,.kv-row input[type=password]:focus{outline:none;border-color:var(--accent)}
+.kv-row input[type=text]::placeholder{color:var(--dim)}
+.kv-row input[type=checkbox]{cursor:pointer;accent-color:var(--accent)}
+.kv-del{background:none;border:none;color:var(--dim);cursor:pointer;font-size:16px;padding:1px 3px;border-radius:3px;line-height:1}
+.kv-del:hover{color:var(--err);background:rgba(239,68,68,.1)}
+.kv-add{margin:5px 8px}
+
+/* ── Body editor ── */
+.body-ed{display:flex;flex-direction:column;flex:1;overflow:hidden}
+.btype-bar{display:flex;gap:4px;padding:7px 8px 0;align-items:center}
+.btype-btn{padding:3px 9px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;cursor:pointer;font-weight:500}
+.btype-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.body-ta{flex:1;background:var(--surface2);border:none;border-top:1px solid var(--border);color:var(--text);padding:10px;font-family:var(--mono);font-size:11px;resize:none;margin-top:7px;line-height:1.6}
+.body-ta:focus{outline:none}
+
+/* ── Auth ── */
+.auth-sec{padding:10px;display:flex;flex-direction:column;gap:8px;overflow-y:auto}
+.auth-sec select,.auth-sec input{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 9px;border-radius:var(--r);font-size:12px;width:100%}
+.auth-sec select:focus,.auth-sec input:focus{outline:none;border-color:var(--accent)}
+.auth-lbl{font-size:11px;color:var(--muted);margin-bottom:3px}
+
+/* ── Response ── */
+.resp-stat{display:flex;align-items:center;gap:10px;padding:7px 11px;background:var(--surface);border-bottom:1px solid var(--border);font-size:11px;flex-shrink:0}
+.scode{font-weight:800;font-size:13px;font-family:var(--mono);padding:2px 8px;border-radius:4px}
+.s2xx{background:rgba(34,197,94,.15);color:var(--ok)}
+.s3xx{background:rgba(59,130,246,.15);color:var(--info)}
+.s4xx,.s5xx,.s0{background:rgba(239,68,68,.15);color:var(--err)}
+.spill{padding:2px 7px;border-radius:4px;background:var(--surface2);color:var(--muted);font-family:var(--mono)}
+.resp-body{flex:1;overflow:auto;padding:10px;font-family:var(--mono);font-size:11px;line-height:1.65}
+.placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--dim);gap:6px;text-align:center}
+.placeholder .pi{font-size:44px;opacity:.2}
+.resp-htable{width:100%;border-collapse:collapse}
+.resp-htable td{padding:5px 8px;border-bottom:1px solid var(--border);font-size:11px;font-family:var(--mono)}
+.resp-htable td:first-child{color:var(--jkey);width:38%;white-space:nowrap}
+.resp-htable td:last-child{word-break:break-all}
+.resp-htable tr:hover td{background:var(--surface2)}
+
+/* ── JSON Tree ── */
+.jtree{font-family:var(--mono);font-size:11px;line-height:1.7}
+.jtree .jk{color:var(--jkey)}
+.jtree .js{color:var(--jstr)}
+.jtree .jn{color:var(--jnum)}
+.jtree .jb{color:var(--jbool)}
+.jtree .jnu{color:var(--jnull)}
+.jtree .jp{color:var(--dim)}
+.jtog{cursor:pointer;user-select:none;display:inline-block;width:13px;text-align:center;color:var(--dim);font-size:9px}
+.jtog:hover{color:var(--accent)}
+.jchildren{margin-left:18px;border-left:1px solid var(--border);padding-left:4px}
+.jcol .jchildren{display:none}
+.jsummary{color:var(--dim);font-style:italic;font-size:10px}
+.jnode{position:relative}
+
+/* ── Resize ── */
+.rhandle{width:4px;background:transparent;cursor:col-resize;flex-shrink:0;transition:background .12s}
+.rhandle:hover,.rhandle.drag{background:var(--accent)}
+
+/* ── Toast ── */
+.toasts{position:fixed;bottom:14px;right:14px;display:flex;flex-direction:column;gap:6px;z-index:999}
+.toast{padding:9px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);font-size:12px;animation:tin .2s ease;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.toast.ok{border-left:3px solid var(--ok)}.toast.err{border-left:3px solid var(--err)}
+@keyframes tin{from{transform:translateX(110%);opacity:0}}
+
+/* ── Dialog ── */
+.dlg-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:center;justify-content:center}
+.dlg-bg.open{display:flex}
+.dlg{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;width:350px;display:flex;flex-direction:column;gap:10px}
+.dlg h3{font-size:14px}
+.dlg input{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:7px 9px;border-radius:var(--r);font-size:12px;width:100%}
+.dlg input:focus{outline:none;border-color:var(--accent)}
+.dlg-acts{display:flex;gap:7px;justify-content:flex-end}
+
+/* ── CORS notice ── */
+.cors{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:var(--r);padding:8px 11px;font-size:11px;color:var(--warn);margin:10px}
+
+/* ── Spinner ── */
+.spin{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:rot .6s linear infinite;display:inline-block}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+/* ── Scrollable sidebar sections ── */
+.sb-saved{flex:0 0 auto;max-height:45%;display:flex;flex-direction:column;border-bottom:1px solid var(--border)}
+.sb-hist{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.sb-saved .sb-list{max-height:200px}
+
+/* ── JSON search ── */
+.json-search{display:flex;gap:5px;padding:5px 8px;border-bottom:1px solid var(--border);flex-shrink:0}
+.json-search input{flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:4px;font-size:11px;font-family:var(--mono)}
+.json-search input:focus{outline:none;border-color:var(--accent)}
+.jhi{background:rgba(99,102,241,.35);border-radius:2px}
+
+/* ── Format btn ── */
+.fmt-btn{margin-left:auto;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:10px;cursor:pointer}
+.fmt-btn:hover{color:var(--text);background:var(--surface2)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="logo">API<b>Forge</b></div>
+  <div class="hdr-right">
+    <button class="btn btn-ico" id="theme-btn" onclick="toggleTheme()" title="Toggle theme">☀</button>
+    <button class="btn btn-sm" onclick="openSaveDialog()">💾 Save</button>
+    <button class="btn btn-sm" onclick="exportReq()">⬇ Export JSON</button>
+    <label class="btn btn-sm" style="cursor:pointer">
+      ⬆ Import
+      <input type="file" accept=".json" style="display:none" onchange="importReq(event)">
+    </label>
+  </div>
+</div>
+
+<div class="main">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-saved">
+      <div class="sb-hd">
+        <span class="sb-title">Saved</span>
+        <button class="btn btn-ico btn-sm" onclick="clearSaved()" title="Clear saved" style="height:20px;width:20px;font-size:11px">✕</button>
+      </div>
+      <div class="sb-list" id="saved-list"></div>
+    </div>
+    <div class="sb-hist">
+      <div class="sb-hd">
+        <span class="sb-title">History</span>
+        <button class="btn btn-ico btn-sm" onclick="clearHist()" title="Clear history" style="height:20px;width:20px;font-size:11px">✕</button>
+      </div>
+      <div class="sb-list" id="hist-list" style="flex:1;overflow-y:auto"></div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <!-- Request bar -->
+    <div class="req-bar">
+      <select class="msel" id="msel" onchange="onMethodChange()">
+        <option>GET</option><option>POST</option><option>PUT</option>
+        <option>PATCH</option><option>DELETE</option><option>HEAD</option><option>OPTIONS</option>
+      </select>
+      <input class="urlinput" id="url" placeholder="https://api.example.com/v1/endpoint"
+             onkeydown="if(event.key==='Enter')send()"
+             oninput="urlToParams()">
+      <button class="btn btn-p" id="send-btn" onclick="send()" style="min-width:72px">Send</button>
+    </div>
+
+    <!-- Split pane -->
+    <div class="split">
+      <!-- REQUEST PANE -->
+      <div class="pane pane-l" id="req-pane" style="width:48%">
+        <div class="tabs" id="req-tabs">
+          <div class="tab active" onclick="rtab('params')">Params<span class="tbadge" id="pb" style="display:none">0</span></div>
+          <div class="tab" onclick="rtab('headers')">Headers<span class="tbadge" id="hb" style="display:none">0</span></div>
+          <div class="tab" onclick="rtab('body')">Body</div>
+          <div class="tab" onclick="rtab('auth')">Auth</div>
+        </div>
+
+        <!-- Params -->
+        <div class="tpanel active" id="rp-params">
+          <div class="kv-wrap" id="params-tbl"></div>
+          <button class="btn btn-sm kv-add" onclick="addKV('params')">＋ Add Param</button>
+        </div>
+
+        <!-- Headers -->
+        <div class="tpanel" id="rp-headers">
+          <div class="kv-wrap" id="headers-tbl"></div>
+          <button class="btn btn-sm kv-add" onclick="addKV('headers')">＋ Add Header</button>
+        </div>
+
+        <!-- Body -->
+        <div class="tpanel" id="rp-body">
+          <div class="body-ed">
+            <div class="btype-bar">
+              <button class="btype-btn active" onclick="setBody('json',this)">JSON</button>
+              <button class="btype-btn" onclick="setBody('text',this)">Text</button>
+              <button class="btype-btn" onclick="setBody('xml',this)">XML</button>
+              <button class="btype-btn" onclick="setBody('form',this)">Form</button>
+              <button class="fmt-btn" onclick="fmtBody()" title="Format / Beautify">Format</button>
+            </div>
+            <div id="body-json" style="display:flex;flex-direction:column;flex:1;overflow:hidden">
+              <textarea class="body-ta" id="body-ta" placeholder='{"key": "value"}'></textarea>
+            </div>
+            <div id="body-form" style="display:none;flex-direction:column;flex:1;overflow:hidden">
+              <div class="kv-wrap" id="form-tbl"></div>
+              <button class="btn btn-sm kv-add" onclick="addKV('form')">＋ Add Field</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Auth -->
+        <div class="tpanel" id="rp-auth">
+          <div class="auth-sec">
+            <div>
+              <div class="auth-lbl">Auth Type</div>
+              <select id="auth-type" onchange="authChange()">
+                <option value="none">None</option>
+                <option value="bearer">Bearer Token</option>
+                <option value="basic">Basic Auth</option>
+                <option value="apikey">API Key Header</option>
+              </select>
+            </div>
+            <div id="a-bearer" style="display:none">
+              <div class="auth-lbl">Token</div>
+              <input type="text" id="a-token" placeholder="eyJhbGci...">
+            </div>
+            <div id="a-basic" style="display:none">
+              <div class="auth-lbl">Username</div>
+              <input type="text" id="a-user" placeholder="username" style="margin-bottom:6px">
+              <div class="auth-lbl">Password</div>
+              <input type="password" id="a-pass" placeholder="password">
+            </div>
+            <div id="a-apikey" style="display:none">
+              <div class="auth-lbl">Header Name</div>
+              <input type="text" id="a-kname" placeholder="X-API-Key" style="margin-bottom:6px">
+              <div class="auth-lbl">Value</div>
+              <input type="text" id="a-kval" placeholder="your-key-here">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resize handle -->
+      <div class="rhandle" id="rhandle"></div>
+
+      <!-- RESPONSE PANE -->
+      <div class="pane" id="resp-pane">
+        <div class="tabs" id="resp-tabs">
+          <div class="tab active" onclick="etab('pretty')">Pretty</div>
+          <div class="tab" onclick="etab('raw')">Raw</div>
+          <div class="tab" onclick="etab('rheads')">Headers</div>
+        </div>
+
+        <!-- Status bar -->
+        <div class="resp-stat" id="resp-stat" style="display:none">
+          <span class="scode" id="rcode"></span>
+          <span class="spill" id="rtime"></span>
+          <span class="spill" id="rsize"></span>
+          <span style="flex:1"></span>
+          <button class="btn btn-sm" onclick="copyResp()">Copy</button>
+          <button class="btn btn-sm" onclick="exportRespJSON()">Export Response</button>
+        </div>
+
+        <!-- Pretty -->
+        <div class="tpanel active" id="ep-pretty" style="overflow:hidden">
+          <div class="json-search" id="jsearch" style="display:none">
+            <input type="text" id="jsearch-in" placeholder="Search in response…" oninput="searchJSON(this.value)">
+            <span id="jsearch-cnt" style="font-size:11px;color:var(--muted);align-self:center"></span>
+          </div>
+          <div class="resp-body" id="resp-pretty">
+            <div class="placeholder">
+              <div class="pi">⚡</div>
+              <div>Enter a URL and click Send</div>
+              <div style="font-size:10px;margin-top:3px">GET · POST · PUT · PATCH · DELETE · HEAD · OPTIONS</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Raw -->
+        <div class="tpanel" id="ep-raw">
+          <div class="resp-body" id="resp-raw" style="white-space:pre-wrap;word-break:break-all"></div>
+        </div>
+
+        <!-- Response Headers -->
+        <div class="tpanel" id="ep-rheads">
+          <div class="resp-body" style="padding:0">
+            <table class="resp-htable" id="resp-htable"></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Save Dialog -->
+<div class="dlg-bg" id="save-dlg">
+  <div class="dlg">
+    <h3>Save Request</h3>
+    <input type="text" id="save-name" placeholder="Request name…">
+    <div class="dlg-acts">
+      <button class="btn btn-sm" onclick="closeSaveDlg()">Cancel</button>
+      <button class="btn btn-sm btn-p" onclick="confirmSave()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+const S = {
+  bodyType: 'json',
+  theme: 'dark',
+  history: [],
+  saved: [],
+  response: null,
+  activeRespTab: 'pretty',
+};
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+function init() {
+  try {
+    const sv = localStorage.getItem('af_saved');
+    if (sv) S.saved = JSON.parse(sv);
+    const th = localStorage.getItem('af_theme');
+    if (th === 'lt') { S.theme = 'lt'; document.body.classList.add('lt'); document.getElementById('theme-btn').textContent = '🌙'; }
+  } catch(_) {}
+  addKV('params'); addKV('headers'); addKV('form');
+  renderSaved(); renderHist();
+  setupResize();
+  // keyboard shortcut
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey||e.metaKey) && e.key === 'Enter') send();
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════════════════
+function toggleTheme() {
+  if (S.theme === 'dark') {
+    S.theme = 'lt'; document.body.classList.add('lt');
+    document.getElementById('theme-btn').textContent = '🌙';
+  } else {
+    S.theme = 'dark'; document.body.classList.remove('lt');
+    document.getElementById('theme-btn').textContent = '☀';
+  }
+  localStorage.setItem('af_theme', S.theme);
+}
+
+// ═══════════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════════
+function rtab(name) {
+  ['params','headers','body','auth'].forEach((n,i) => {
+    document.querySelectorAll('#req-tabs .tab')[i].classList.toggle('active', n===name);
+    document.getElementById(`rp-${n}`).classList.toggle('active', n===name);
+  });
+}
+
+function etab(name) {
+  S.activeRespTab = name;
+  ['pretty','raw','rheads'].forEach((n,i) => {
+    document.querySelectorAll('#resp-tabs .tab')[i].classList.toggle('active', n===name);
+    document.getElementById(`ep-${n}`).classList.toggle('active', n===name);
+  });
+  document.getElementById('jsearch').style.display = (name==='pretty' && S.response && isJSON(S.response.text)) ? 'flex' : 'none';
+}
+
+// ═══════════════════════════════════════════════════
+// KV TABLES
+// ═══════════════════════════════════════════════════
+let kvId = 0;
+function addKV(type, k='', v='', on=true) {
+  const tbl = document.getElementById(`${type}-tbl`);
+  const id = `kv_${++kvId}`;
+  const row = document.createElement('div');
+  row.className = 'kv-row'; row.dataset.id = id;
+  row.innerHTML = `
+    <input type="checkbox" ${on?'checked':''} title="Enable" onchange="badge('${type}')">
+    <input type="text" placeholder="Key" value="${esc(k)}" oninput="if('${type}'==='params')paramsToUrl();badge('${type}')">
+    <input type="text" placeholder="Value" value="${esc(v)}" oninput="if('${type}'==='params')paramsToUrl()">
+    <button class="kv-del" onclick="this.closest('.kv-row').remove();if('${type}'==='params')paramsToUrl();badge('${type}')" title="Remove">×</button>`;
+  tbl.appendChild(row);
+  badge(type);
+}
+
+function getKV(type) {
+  return [...document.getElementById(`${type}-tbl`).querySelectorAll('.kv-row')].map(r => {
+    const ins = r.querySelectorAll('input[type=text]');
+    return { k: ins[0].value, v: ins[1].value, on: r.querySelector('input[type=checkbox]').checked };
+  }).filter(r => r.k || r.v);
+}
+
+function setKV(type, data) {
+  document.getElementById(`${type}-tbl`).innerHTML = '';
+  (data||[]).forEach(d => addKV(type, d.k||d.key||'', d.v||d.value||'', d.on!==false));
+  if (!data || data.length === 0) addKV(type);
+  badge(type);
+}
+
+function badge(type) {
+  const el = document.getElementById(type==='params'?'pb':'hb');
+  if (!el) return;
+  const n = getKV(type).filter(r=>r.on&&r.k).length;
+  el.textContent = n; el.style.display = n ? 'inline' : 'none';
+}
+
+// ═══════════════════════════════════════════════════
+// URL ↔ PARAMS SYNC
+// ═══════════════════════════════════════════════════
+let syncLock = false;
+function urlToParams() {
+  if (syncLock) return;
+  syncLock = true;
+  try {
+    const url = document.getElementById('url').value;
+    const qi = url.indexOf('?');
+    if (qi === -1) { syncLock=false; return; }
+    const pairs = [];
+    new URLSearchParams(url.slice(qi+1)).forEach((v,k) => pairs.push({k,v,on:true}));
+    setKV('params', pairs);
+  } catch(_) {}
+  syncLock = false;
+}
+
+function paramsToUrl() {
+  if (syncLock) return;
+  syncLock = true;
+  const base = document.getElementById('url').value.split('?')[0];
+  const ps = getKV('params').filter(r=>r.on&&r.k);
+  const qs = ps.map(r=>`${encURIComp(r.k)}=${encURIComp(r.v)}`).join('&');
+  document.getElementById('url').value = qs ? `${base}?${qs}` : base;
+  syncLock = false;
+}
+
+function encURIComp(s) {
+  try { return encodeURIComponent(s); } catch(_) { return s; }
+}
+
+// ═══════════════════════════════════════════════════
+// BODY TYPE
+// ═══════════════════════════════════════════════════
+function setBody(type, btn) {
+  S.bodyType = type;
+  document.querySelectorAll('.btype-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const isForm = type === 'form';
+  document.getElementById('body-json').style.display = isForm ? 'none' : 'flex';
+  document.getElementById('body-form').style.display = isForm ? 'flex' : 'none';
+  const ph = {json:'{\n  "key": "value"\n}', text:'Plain text body…', xml:'<?xml version="1.0"?>\n<root>\n</root>'};
+  if (!isForm) document.getElementById('body-ta').placeholder = ph[type]||'';
+}
+
+function fmtBody() {
+  if (S.bodyType !== 'json') return;
+  try {
+    const ta = document.getElementById('body-ta');
+    ta.value = JSON.stringify(JSON.parse(ta.value), null, 2);
+  } catch(_) { toast('Invalid JSON — cannot format', 'err'); }
+}
+
+// ═══════════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════════
+function authChange() {
+  const t = document.getElementById('auth-type').value;
+  document.getElementById('a-bearer').style.display = t==='bearer' ? 'block' : 'none';
+  document.getElementById('a-basic').style.display  = t==='basic'  ? 'block' : 'none';
+  document.getElementById('a-apikey').style.display = t==='apikey' ? 'block' : 'none';
+}
+
+function authHeaders() {
+  const t = document.getElementById('auth-type').value;
+  const h = {};
+  if (t==='bearer') {
+    const tok = document.getElementById('a-token').value;
+    if (tok) h['Authorization'] = `Bearer ${tok}`;
+  } else if (t==='basic') {
+    const u = document.getElementById('a-user').value;
+    const p = document.getElementById('a-pass').value;
+    if (u) h['Authorization'] = `Basic ${btoa(`${u}:${p}`)}`;
+  } else if (t==='apikey') {
+    const n = document.getElementById('a-kname').value;
+    const v = document.getElementById('a-kval').value;
+    if (n&&v) h[n] = v;
+  }
+  return h;
+}
+
+function onMethodChange() {
+  // nothing extra needed currently
+}
+
+// ═══════════════════════════════════════════════════
+// SEND REQUEST
+// ═══════════════════════════════════════════════════
+async function send() {
+  const url = document.getElementById('url').value.trim();
+  if (!url) { toast('Enter a URL first', 'err'); return; }
+
+  const method = document.getElementById('msel').value;
+  const btn = document.getElementById('send-btn');
+  btn.innerHTML = '<span class="spin"></span>';
+  btn.disabled = true;
+
+  // Build headers
+  const hdrs = {};
+  getKV('headers').filter(h=>h.on&&h.k).forEach(h => { hdrs[h.k] = h.v; });
+  Object.assign(hdrs, authHeaders());
+
+  // Build body
+  let body = null;
+  const withBody = ['POST','PUT','PATCH','DELETE','OPTIONS'];
+  if (withBody.includes(method)) {
+    if (S.bodyType === 'form') {
+      const fd = new URLSearchParams();
+      getKV('form').filter(f=>f.on&&f.k).forEach(f => fd.append(f.k, f.v));
+      body = fd.toString();
+      if (!hdrs['Content-Type']) hdrs['Content-Type'] = 'application/x-www-form-urlencoded';
+    } else {
+      body = document.getElementById('body-ta').value || null;
+      if (body && S.bodyType==='json' && !hdrs['Content-Type']) hdrs['Content-Type'] = 'application/json';
+      if (body && S.bodyType==='xml' && !hdrs['Content-Type']) hdrs['Content-Type'] = 'application/xml';
+    }
+  }
+
+  const t0 = performance.now();
+  let resp = null, text = '', err = null;
+  try {
+    const opts = { method, headers: hdrs };
+    if (body !== null && body !== '') opts.body = body;
+    resp = await fetch(url, opts);
+    text = method === 'HEAD' ? '' : await resp.text();
+  } catch(e) { err = e; }
+
+  const ms = Math.round(performance.now() - t0);
+  btn.innerHTML = 'Send'; btn.disabled = false;
+
+  if (err) {
+    showError(err);
+    addHist(method, url, 0, ms);
+    return;
+  }
+
+  S.response = { text, status: resp.status, statusText: resp.statusText, headers: resp.headers, ms };
+  showResp(resp, text, ms);
+  addHist(method, url, resp.status, ms);
+}
+
+// ═══════════════════════════════════════════════════
+// SHOW RESPONSE
+// ═══════════════════════════════════════════════════
+function showResp(resp, text, ms) {
+  // Status bar
+  document.getElementById('resp-stat').style.display = 'flex';
+  const sc = document.getElementById('rcode');
+  sc.textContent = `${resp.status} ${resp.statusText}`;
+  const cls = resp.status>=500?'s5xx':resp.status>=400?'s4xx':resp.status>=300?'s3xx':'s2xx';
+  sc.className = `scode ${cls}`;
+  document.getElementById('rtime').textContent = `${ms} ms`;
+  document.getElementById('rsize').textContent = fmtBytes(new TextEncoder().encode(text).length);
+
+  // Pretty
+  const ct = resp.headers.get('content-type')||'';
+  const pretty = document.getElementById('resp-pretty');
+  if (text && (ct.includes('json')||isJSON(text))) {
+    try {
+      const json = JSON.parse(text);
+      pretty.innerHTML = '';
+      pretty.appendChild(buildTree(json));
+      document.getElementById('jsearch').style.display = S.activeRespTab==='pretty' ? 'flex' : 'none';
+      document.getElementById('jsearch-in').value = '';
+      document.getElementById('jsearch-cnt').textContent = '';
+    } catch(_) {
+      pretty.innerHTML = `<pre style="white-space:pre-wrap;word-break:break-all">${esc(text)}</pre>`;
+      document.getElementById('jsearch').style.display = 'none';
+    }
+  } else if (ct.includes('html') && text) {
+    document.getElementById('jsearch').style.display = 'none';
+    pretty.innerHTML = `<div style="color:var(--muted);font-size:11px;margin-bottom:8px">HTML response — Raw tab shows source</div>
+      <iframe srcdoc="${esc(text)}" style="width:100%;height:380px;border:1px solid var(--border);border-radius:4px;background:#fff"></iframe>`;
+  } else {
+    document.getElementById('jsearch').style.display = 'none';
+    pretty.innerHTML = `<pre style="white-space:pre-wrap;word-break:break-all">${esc(text||'(empty body)')}</pre>`;
+  }
+
+  // Raw
+  document.getElementById('resp-raw').textContent = text;
+
+  // Response headers
+  const tbl = document.getElementById('resp-htable');
+  tbl.innerHTML = '';
+  resp.headers.forEach((v, k) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${esc(k)}</td><td>${esc(v)}</td>`;
+    tbl.appendChild(tr);
+  });
+}
+
+function showError(err) {
+  document.getElementById('resp-stat').style.display = 'flex';
+  const sc = document.getElementById('rcode');
+  sc.textContent = 'Failed'; sc.className = 'scode s0';
+  document.getElementById('rtime').textContent = '—';
+  document.getElementById('rsize').textContent = '—';
+  document.getElementById('jsearch').style.display = 'none';
+  document.getElementById('resp-pretty').innerHTML = `
+    <div style="color:var(--err)">
+      <div style="font-weight:700;margin-bottom:6px">Request Failed</div>
+      <div style="color:var(--muted);font-size:11px;margin-bottom:10px">${esc(err.message)}</div>
+    </div>
+    <div class="cors">
+      <strong>Possible CORS issue:</strong> Browsers block cross-origin requests unless the server allows them.
+      To test APIs that don't send CORS headers, use a browser extension like "CORS Unblock" or run a local proxy.
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════
+// JSON TREE
+// ═══════════════════════════════════════════════════
+function buildTree(data, key=null, depth=0) {
+  const wrap = document.createElement('div');
+  wrap.className = 'jtree';
+
+  if (key !== null) {
+    wrap.appendChild(span('jk', `"${key}"`));
+    wrap.appendChild(span('jp', ': '));
+  }
+
+  if (data === null) { wrap.appendChild(span('jnu','null')); return wrap; }
+  if (typeof data === 'boolean') { wrap.appendChild(span('jb', String(data))); return wrap; }
+  if (typeof data === 'number') { wrap.appendChild(span('jn', String(data))); return wrap; }
+  if (typeof data === 'string') { wrap.appendChild(span('js', `"${data}"`)); return wrap; }
+
+  const isArr = Array.isArray(data);
+  const entries = isArr ? data : Object.keys(data);
+  const count = entries.length;
+  const autoCollapse = depth > 1 && count > 5;
+
+  const node = document.createElement('div');
+  node.className = 'jnode' + (autoCollapse ? ' jcol' : '');
+
+  const hdr = document.createElement('span');
+  const tog = document.createElement('span');
+  tog.className = 'jtog';
+  tog.textContent = autoCollapse ? '▶' : '▼';
+  tog.onclick = () => {
+    node.classList.toggle('jcol');
+    tog.textContent = node.classList.contains('jcol') ? '▶' : '▼';
+  };
+
+  hdr.appendChild(tog);
+  hdr.appendChild(span('jp', isArr ? '[' : '{'));
+  hdr.appendChild(span('jsummary', ` ${count} ${isArr?'items':'keys'}`));
+  node.appendChild(hdr);
+
+  const kids = document.createElement('div');
+  kids.className = 'jchildren';
+
+  if (isArr) {
+    data.forEach((item, i) => {
+      const row = document.createElement('div');
+      row.style.display = 'flex';
+      row.appendChild(buildTree(item, null, depth+1));
+      if (i < count-1) row.appendChild(span('jp',','));
+      kids.appendChild(row);
+    });
+  } else {
+    Object.keys(data).forEach((k, i) => {
+      const row = document.createElement('div');
+      row.style.display = 'flex';
+      row.appendChild(buildTree(data[k], k, depth+1));
+      if (i < count-1) row.appendChild(span('jp',','));
+      kids.appendChild(row);
+    });
+  }
+
+  const close = document.createElement('div');
+  close.appendChild(span('jp', isArr ? ']' : '}'));
+
+  node.appendChild(kids);
+  node.appendChild(close);
+  wrap.appendChild(node);
+  return wrap;
+}
+
+function span(cls, text) {
+  const s = document.createElement('span');
+  s.className = cls; s.textContent = text; return s;
+}
+
+// ═══════════════════════════════════════════════════
+// JSON SEARCH
+// ═══════════════════════════════════════════════════
+function searchJSON(q) {
+  const pretty = document.getElementById('resp-pretty');
+  // Remove old highlights
+  pretty.querySelectorAll('.jhi').forEach(el => {
+    const p = el.parentNode;
+    p.replaceChild(document.createTextNode(el.textContent), el);
+    p.normalize();
+  });
+  document.getElementById('jsearch-cnt').textContent = '';
+  if (!q) return;
+
+  let count = 0;
+  const lq = q.toLowerCase();
+  const walk = (node) => {
+    if (node.nodeType === 3) { // text node
+      const text = node.textContent;
+      const li = text.toLowerCase();
+      if (li.includes(lq)) {
+        const frag = document.createDocumentFragment();
+        let last = 0, idx;
+        while ((idx = li.indexOf(lq, last)) !== -1) {
+          if (idx > last) frag.appendChild(document.createTextNode(text.slice(last, idx)));
+          const mark = document.createElement('span');
+          mark.className = 'jhi';
+          mark.textContent = text.slice(idx, idx+q.length);
+          frag.appendChild(mark);
+          count++;
+          last = idx + q.length;
+        }
+        if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+        node.parentNode.replaceChild(frag, node);
+      }
+    } else if (node.nodeType === 1 && node.tagName !== 'INPUT') {
+      [...node.childNodes].forEach(walk);
+    }
+  };
+  walk(pretty);
+  document.getElementById('jsearch-cnt').textContent = count ? `${count} match${count>1?'es':''}` : 'no matches';
+}
+
+// ═══════════════════════════════════════════════════
+// HISTORY
+// ═══════════════════════════════════════════════════
+function addHist(method, url, status, ms) {
+  S.history.unshift({ method, url, status, ms, ts: Date.now() });
+  if (S.history.length > 80) S.history.length = 80;
+  renderHist();
+}
+
+function renderHist() {
+  const el = document.getElementById('hist-list');
+  if (!S.history.length) {
+    el.innerHTML = '<div class="empty"><div class="ei">📋</div>No history yet</div>';
+    return;
+  }
+  el.innerHTML = S.history.map((h,i) =>
+    `<div class="sb-item" onclick="loadHist(${i})" title="${esc(h.url)}">
+       <span class="mbadge m-${h.method}">${h.method}</span>
+       <span class="iurl">${esc(shortUrl(h.url))}</span>
+       <span style="font-size:9px;color:${statusColor(h.status)}">${h.status||'—'}</span>
+     </div>`
+  ).join('');
+}
+
+function loadHist(i) {
+  const h = S.history[i]; if (!h) return;
+  document.getElementById('msel').value = h.method;
+  document.getElementById('url').value = h.url;
+  urlToParams();
+}
+
+function clearHist() {
+  S.history = []; renderHist();
+}
+
+// ═══════════════════════════════════════════════════
+// SAVE / LOAD
+// ═══════════════════════════════════════════════════
+function snapshot(name='') {
+  return {
+    name, method: document.getElementById('msel').value,
+    url: document.getElementById('url').value,
+    params: getKV('params'), headers: getKV('headers'),
+    bodyType: S.bodyType, body: document.getElementById('body-ta').value,
+    formFields: getKV('form'),
+    auth: {
+      type: document.getElementById('auth-type').value,
+      token: document.getElementById('a-token').value,
+      user: document.getElementById('a-user').value,
+      pass: document.getElementById('a-pass').value,
+      kname: document.getElementById('a-kname').value,
+      kval: document.getElementById('a-kval').value,
+    },
+    savedAt: new Date().toISOString(),
+  };
+}
+
+function restore(req) {
+  if (!req) return;
+  document.getElementById('msel').value = req.method || 'GET';
+  document.getElementById('url').value = req.url || '';
+  setKV('params', req.params || []);
+  setKV('headers', req.headers || []);
+  setKV('form', req.formFields || []);
+
+  S.bodyType = req.bodyType || 'json';
+  document.querySelectorAll('.btype-btn').forEach((b,i) => {
+    const types = ['json','text','xml','form'];
+    b.classList.toggle('active', types[i] === S.bodyType);
+  });
+  document.getElementById('body-ta').value = req.body || '';
+  const isForm = S.bodyType === 'form';
+  document.getElementById('body-json').style.display = isForm ? 'none' : 'flex';
+  document.getElementById('body-form').style.display = isForm ? 'flex' : 'none';
+
+  if (req.auth) {
+    document.getElementById('auth-type').value = req.auth.type || 'none';
+    document.getElementById('a-token').value = req.auth.token || '';
+    document.getElementById('a-user').value = req.auth.user || '';
+    document.getElementById('a-pass').value = req.auth.pass || '';
+    document.getElementById('a-kname').value = req.auth.kname || '';
+    document.getElementById('a-kval').value = req.auth.kval || '';
+    authChange();
+  }
+  urlToParams();
+}
+
+function openSaveDialog() {
+  document.getElementById('save-dlg').classList.add('open');
+  document.getElementById('save-name').value = '';
+  document.getElementById('save-name').focus();
+}
+
+function closeSaveDlg() { document.getElementById('save-dlg').classList.remove('open'); }
+
+function confirmSave() {
+  const name = document.getElementById('save-name').value.trim() || 'Untitled';
+  S.saved.unshift(snapshot(name));
+  persist(); renderSaved(); closeSaveDlg();
+  toast(`Saved "${name}"`, 'ok');
+}
+
+function renderSaved() {
+  const el = document.getElementById('saved-list');
+  if (!S.saved.length) {
+    el.innerHTML = '<div class="empty"><div class="ei">💾</div>No saved requests<div style="font-size:10px">Click Save to store one</div></div>';
+    return;
+  }
+  el.innerHTML = S.saved.map((s,i) =>
+    `<div class="sb-item" onclick="restore(S.saved[${i}])" title="${esc(s.url)}">
+       <span class="mbadge m-${s.method}">${s.method}</span>
+       <span class="iurl">${esc(s.name||shortUrl(s.url))}</span>
+       <button class="idel" onclick="event.stopPropagation();delSaved(${i})" title="Delete">×</button>
+     </div>`
+  ).join('');
+}
+
+function delSaved(i) { S.saved.splice(i,1); persist(); renderSaved(); }
+
+function clearSaved() {
+  if (!confirm('Clear all saved requests?')) return;
+  S.saved = []; persist(); renderSaved();
+}
+
+function persist() {
+  try { localStorage.setItem('af_saved', JSON.stringify(S.saved)); } catch(_) {}
+}
+
+// ═══════════════════════════════════════════════════
+// EXPORT / IMPORT
+// ═══════════════════════════════════════════════════
+function exportReq() {
+  const data = snapshot(document.getElementById('url').value||'export');
+  dlBlob(JSON.stringify(data, null, 2), `api-request-${Date.now()}.json`, 'application/json');
+  toast('Request exported', 'ok');
+}
+
+function importReq(evt) {
+  const file = evt.target.files[0]; if (!file) return;
+  const r = new FileReader();
+  r.onload = e => {
+    try {
+      const req = JSON.parse(e.target.result);
+      restore(req);
+      toast(`Imported: ${req.name||req.url||'request'}`, 'ok');
+    } catch(_) { toast('Invalid JSON file', 'err'); }
+  };
+  r.readAsText(file);
+  evt.target.value = '';
+}
+
+function exportRespJSON() {
+  if (!S.response) return;
+  dlBlob(S.response.text, `api-response-${Date.now()}.json`, 'application/json');
+  toast('Response exported', 'ok');
+}
+
+function dlBlob(content, filename, mime) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content], {type: mime}));
+  a.download = filename; a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function copyResp() {
+  if (!S.response) return;
+  navigator.clipboard.writeText(S.response.text).then(() => toast('Copied!', 'ok'));
+}
+
+// ═══════════════════════════════════════════════════
+// RESIZE PANES
+// ═══════════════════════════════════════════════════
+function setupResize() {
+  const handle = document.getElementById('rhandle');
+  const split = handle.parentElement;
+  let dragging = false, x0, w0;
+
+  handle.addEventListener('mousedown', e => {
+    dragging = true; x0 = e.clientX;
+    w0 = document.getElementById('req-pane').offsetWidth;
+    handle.classList.add('drag');
+    document.body.style.cssText += ';cursor:col-resize;user-select:none';
+  });
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const dx = e.clientX - x0;
+    const nw = Math.max(200, Math.min(w0+dx, split.offsetWidth-200));
+    const rp = document.getElementById('req-pane');
+    rp.style.flex = 'none'; rp.style.width = nw + 'px';
+  });
+  document.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging = false; handle.classList.remove('drag');
+    document.body.style.cursor = ''; document.body.style.userSelect = '';
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function isJSON(s) {
+  if (!s) return false;
+  const t = s.trim();
+  return (t[0]==='{' || t[0]==='[');
+}
+
+function fmtBytes(b) {
+  if (b < 1024) return `${b} B`;
+  if (b < 1048576) return `${(b/1024).toFixed(1)} KB`;
+  return `${(b/1048576).toFixed(1)} MB`;
+}
+
+function shortUrl(url) {
+  try {
+    const u = new URL(url);
+    const p = u.pathname.length > 1 ? u.pathname : u.hostname;
+    return p.length > 38 ? p.slice(0,38)+'…' : p;
+  } catch(_) {
+    return url.length > 38 ? url.slice(0,38)+'…' : url;
+  }
+}
+
+function statusColor(s) {
+  if (!s) return 'var(--dim)';
+  if (s >= 500) return 'var(--err)';
+  if (s >= 400) return '#fb923c';
+  if (s >= 300) return 'var(--info)';
+  return 'var(--ok)';
+}
+
+function toast(msg, type='ok') {
+  const c = document.getElementById('toasts');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`; t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity .3s'; setTimeout(()=>t.remove(),300); }, 2800);
+}
+
+// ── Dialog keyboard shortcuts ──
+document.getElementById('save-name').addEventListener('keydown', e => {
+  if (e.key === 'Enter') confirmSave();
+  if (e.key === 'Escape') closeSaveDlg();
+});
+document.getElementById('save-dlg').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeSaveDlg();
+});
+
+init();
+</script>
+</body>
+</html>
